@@ -3,44 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>מחשבון בלוקי ג'ונסון PRO INDUSTRIAL</title>
+<title>מחשבון בלוקי ג'ונסון – גרסת מדידה</title>
 <style>
-:root{--bg:#0b0c10;--card:#15181e;--ink:#f2f2f2;--accent:#4da3ff;--ok:#2ed47a}
+:root{--bg:#0b0c10;--card:#14171d;--ink:#f2f2f2;--accent:#4da3ff;--line:#1f232b}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
 background:var(--bg);color:var(--ink)}
-header{text-align:center;padding:22px}
+header{text-align:center;padding:20px}
 h1{margin:0;font-size:1.4rem}
-.card{background:var(--card);border:1px solid #1f232b;border-radius:14px;
-padding:18px;margin:12px auto;max-width:800px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
-input,select,button{width:100%;padding:10px;border-radius:8px;
-border:1px solid #1f232b;background:#0e1216;color:var(--ink);font-size:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+padding:18px;margin:12px auto;max-width:700px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+input,button{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);
+background:#0e1216;color:var(--ink);font-size:1rem}
 button{background:var(--accent);color:#001428;font-weight:700;cursor:pointer}
-.result{line-height:1.6;font-size:1.05rem}
-.ok{color:var(--ok);font-weight:700}
+.result{line-height:1.8;font-size:1.1rem}
 </style>
 </head>
 <body>
 <header>
-<h1>מחשבון PRO INDUSTRIAL – בלוקי ג'ונסון</h1>
-<div style="color:#a7a7a7;font-size:.9rem">מחשב לפי הסט הפיזי שלך (1.005–250 מ"מ)</div>
+<h1>מחשבון בלוקי ג'ונסון</h1>
+<div style="color:#a7a7a7;font-size:.9rem">הזן מידה במ״מ – תקבל אילו בלוקים לקחת לפי הסט שלך</div>
 </header>
 
 <div class="card">
-<label>מידה נומינלית (מ״מ)</label>
+<label>מידה (במ״מ)</label>
 <input id="nominal" type="number" step="0.001" placeholder="לדוגמה: 27.700">
-<label>טולרנס ± (מ״מ, לא חובה)</label>
-<input id="tol" type="number" step="0.001" placeholder="לדוגמה: 0.010">
 <button id="calc" style="margin-top:10px">חשב</button>
 </div>
 
 <div id="out" class="card" style="display:none"></div>
 
 <script>
+// רשימת הבלוקים לפי הסט שבתמונה שלך
 const blocks=[1.005,1.006,1.007,1.008,1.009,1.01,1.02,1.03,1.04,1.05,1.06,1.07,1.08,1.09,
 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,25,30,40,50,60,75,100,125,150,175,200,225,250];
 
-function getCombination(value){
-  let remain=value, selected=[];
+// חישוב פשוט וברור: בנייה מהבלוק הגדול אל הקטן
+function buildBlocks(target){
+  let remain=target, selected=[];
   for(let i=blocks.length-1;i>=0;i--){
     if(blocks[i]<=remain+0.0005){
       selected.push(blocks[i]);
@@ -51,33 +50,21 @@ function getCombination(value){
   return selected;
 }
 
-function formatBlocks(arr){
-  return arr.map(b=>{
-    let label="";
-    if(b>=1) label=`${b.toFixed(0)} מ"מ`;
-    else if(b>=0.1) label=`${b.toFixed(1)} מ"מ`;
-    else label=`${b.toFixed(3)} מ"מ`;
-    return `→ ${label}`;
-  }).join("<br>");
+function show(b){
+  return b.map(x=>`→ ${x % 1===0 ? x.toFixed(0) : x.toFixed(3)} מ״מ`).join("<br>");
 }
 
 document.getElementById("calc").onclick=()=>{
-  const nom=parseFloat(document.getElementById("nominal").value);
-  if(isNaN(nom))return alert("הכנס מידה נומינלית תקפה");
-  const tol=parseFloat(document.getElementById("tol").value)||0;
+  const val=parseFloat(document.getElementById("nominal").value);
+  if(isNaN(val))return alert("הכנס מידה תקפה במ״מ");
+  const combo=buildBlocks(val);
   const out=document.getElementById("out");
-  const combo=getCombination(nom);
-  const comboGo=getCombination(nom+tol);
-  const comboNo=getCombination(nom-tol);
   out.style.display="block";
   out.innerHTML=`
-  <div class="result">
-  <b>נומינל ${nom.toFixed(3)} מ"מ:</b><br>${formatBlocks(combo)}
-  <hr>
-  <b>GO (${(nom+tol).toFixed(3)} מ"מ):</b><br>${formatBlocks(comboGo)}
-  <hr>
-  <b>NO-GO (${(nom-tol).toFixed(3)} מ"מ):</b><br>${formatBlocks(comboNo)}
-  </div>`;
+    <div class="result">
+      קח את הבלוקים הבאים לסכום של <b>${val.toFixed(3)} מ״מ</b>:<br><br>
+      ${show(combo)}
+    </div>`;
 };
 </script>
 </body>
