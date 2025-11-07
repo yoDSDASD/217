@@ -1,220 +1,173 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>מחשבון דרגות טיב פני שטח – PRO (N לפי Ra)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>מכשירי יצור · דרגת N לפי Ra</title>
 <style>
-  :root{
-    --bg:#0a0c12;--card:#121622;--ink:#f2f2f2;--muted:#a8a8a8;
-    --accent:#3ea6ff;--ok:#37d07f;--bad:#ff4d6d;--shadow:0 8px 30px rgba(0,0,0,.45)
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%}
-  body{
-    margin:0;background:var(--bg);color:var(--ink);
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
-    display:flex;flex-direction:column;min-height:100vh;
-    padding-bottom:env(safe-area-inset-bottom);
-  }
-  header{text-align:center;padding:22px 16px}
-  h1{margin:0 0 6px;font-size:1.6rem;font-weight:800}
-  h1 .tag{color:#001b2d;background:var(--accent);border-radius:999px;padding:2px 10px}
-  .muted{color:var(--muted);font-size:.92rem}
-  .wrap{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:16px}
-  .card{
-    width:100%;max-width:820px;background:var(--card);
-    border-radius:18px;padding:22px;border:1px solid #1d2233;
-    box-shadow:var(--shadow);animation:fadein .35s ease
-  }
-  @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  .row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
-  .field{flex:1 1 220px}
-  label{display:block;font-weight:700;margin-bottom:6px}
-  input[type=number],select,button{
-    width:100%;padding:14px 14px;border-radius:12px;border:1px solid #293041;
-    background:#0e111b;color:var(--ink);font-size:1.02rem;transition:.2s
-  }
-  input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px #3ea6ff33}
-  button{
-    background:var(--accent);color:#001b2d;font-weight:900;cursor:pointer;min-width:140px
-  }
-  button:hover{transform:translateY(-1px);box-shadow:0 4px 14px #3ea6ff55}
-  button:active{transform:none}
-  .result{margin-top:14px;padding:14px 16px;border-radius:14px;background:#0f1522;border:1px dashed #2c3242}
-  .result h2{margin:0 0 6px;font-size:1.28rem}
-  .chip{display:inline-block;padding:4px 9px;border-radius:10px;border:1px solid #2c3242;margin:4px 4px 0 0}
-  .tagline{display:inline-block;padding:2px 10px;border-radius:999px;background:#102033;border:1px solid #2a3f5a;color:#90c8ff;font-weight:800}
-  table{width:100%;border-collapse:collapse;margin-top:12px;font-variant-numeric:tabular-nums}
-  th,td{border-bottom:1px solid #232838;padding:8px 10px;text-align:center}
-  th{position:sticky;top:0;background:#111626}
-  tr.hit{outline:2px solid var(--ok);background:#0e1c17}
-  footer{text-align:center;color:var(--muted);font-size:.84rem;padding:16px 10px calc(18px + env(safe-area-inset-bottom))}
-  /* מובייל: התאמה לאייפון 12 ומקלדת */
-  @media(max-width:480px){
-    h1{font-size:1.35rem}
-    .card{padding:16px;border-radius:16px}
-    .row{flex-direction:column}
-    input,select,button{font-size:1.04rem}
-  }
+:root {
+  --bg: #0f1115;
+  --card: #171a21;
+  --ink: #f5f5f5;
+  --muted: #9ca3af;
+  --accent: #3b82f6;
+  --ok: #22c55e;
+  --warn: #ef4444;
+  --border: #2b2f36;
+}
+body {
+  margin: 0;
+  font-family: "Heebo", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  padding: 20px;
+  text-align: center;
+}
+h2 {
+  margin: 0 0 10px;
+  font-weight: 800;
+}
+.sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+input, select, button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0f1115;
+  color: var(--ink);
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 8px;
+}
+button {
+  background: var(--accent);
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 16px;
+}
+button:hover { filter: brightness(1.2); }
+.result {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 10px 0;
+}
+.tableWrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  margin-top: 35px;
+  overflow-x: auto;
+  padding: 10px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+th {
+  font-weight: 800;
+  color: var(--muted);
+}
+tr.active {
+  background-color: rgba(34,197,94,0.15);
+  border-left: 3px solid var(--ok);
+}
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  margin-top: 6px;
+}
+.ok { color: var(--ok); border-color: var(--ok); }
+.warn { color: var(--warn); border-color: var(--warn); }
+.fade { animation: fade 0.25s ease-out both; }
+@keyframes fade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
-  <header>
-    <h1>מחשבון N לפי <span class="tagline">Ra</span> – גרסת PRO</h1>
-    <div class="muted">הזן Ra וקבל את דרגת ה-N לפי טבלת ISO 1302 עם המרה ל-µin.</div>
-  </header>
+  <h2>דרגת N לפי Ra</h2>
+  <div class="sub">הזן ערך Ra וקבל את דרגת ה־N והטווח לפי תקן ISO 1302</div>
 
-  <div class="wrap">
-    <section class="card">
-      <div class="row">
-        <div class="field">
-          <label for="ra">תוצאת Ra</label>
-          <input id="ra" type="number" inputmode="decimal" min="0" step="0.001" placeholder="לדוגמה: 0.72">
-        </div>
-        <div class="field" style="max-width:220px">
-          <label for="unit">יחידות</label>
-          <select id="unit">
-            <option value="um" selected>מיקרון (µm)</option>
-            <option value="uin">מיקרו-אינטש (µin)</option>
-          </select>
-        </div>
-        <div class="field" style="flex:0 0 auto">
-          <button id="calc" aria-label="חשב דרגת N">חשב</button>
-        </div>
-      </div>
-
-      <div id="out" class="result" aria-live="polite">
-        <h2>עוד לא הוזן ערך</h2>
-        <div class="muted">אחרי החישוב תוצג דרגת N, טווח אינפורמטיבי והמרה ל-µin.</div>
-      </div>
-
-      <details style="margin-top:12px">
-        <summary>הסבר קצר</summary>
-        <div class="muted">
-          הסיווג: בוחרים את הדרגה הקטנה ביותר שעבורה Ra≤נומינל. לדוגמה 0.90 µm → N7 (כי N6=0.8 קטן מדי).
-          אם הערך נמוך מ-N1 נדווח N1. מעל N12 תופיע אזהרת טווח.
-        </div>
-      </details>
-
-      <div style="overflow:auto;max-height:360px;margin-top:10px">
-        <table id="tbl" aria-label="טבלת נומינלים Ra לפי דרגות N">
-          <thead>
-            <tr><th>דרגת N</th><th>Ra [µm]</th><th>Ra [µin]</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+  <div class="card">
+    <input id="ra" type="number" inputmode="decimal" placeholder="לדוגמה 2.5">
+    <select id="unit">
+      <option value="um">(µm) מיקרון</option>
+      <option value="uin">(µin) מיקרו־אינץ׳</option>
+    </select>
+    <button onclick="calc()">חשב</button>
+    <div class="result fade" id="res"></div>
   </div>
 
-  <footer>© 2025 – מחשבון חספוס תעשייתי PRO. מותאם לאייפון 12 ומסכי מגע.</footer>
+  <div class="tableWrap fade" id="tableWrap">
+    <table id="tbl">
+      <thead>
+        <tr><th>דרגה</th><th>Ra נומינלי (µm)</th><th>טווח (µm)</th><th>Ra (µin)</th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
 
 <script>
-(function(){
-  // נומינלים ל-N1..N12 לפי ISO-Style
-  const N = [
-    {n:1,um:0.025},{n:2,um:0.05},{n:3,um:0.1},{n:4,um:0.2},
-    {n:5,um:0.4},{n:6,um:0.8},{n:7,um:1.6},{n:8,um:3.2},
-    {n:9,um:6.3},{n:10,um:12.5},{n:11,um:25},{n:12,um:50}
-  ];
-  const UIN_PER_UM = 39.37007874; // 1 µm = 39.37 µin
-
-  // בניית טבלה
-  const tbody = document.querySelector("#tbl tbody");
-  const fmt = (x,d=3)=>Number(x).toLocaleString('he-IL',{maximumFractionDigits:d});
-  function buildTable(){
-    tbody.innerHTML="";
-    N.forEach(g=>{
-      const tr=document.createElement("tr");
-      tr.dataset.n=g.n;
-      tr.innerHTML = `<td>N${g.n}</td><td>${fmt(g.um,3)}</td><td>${fmt(g.um*UIN_PER_UM,1)}</td>`;
-      tbody.appendChild(tr);
-    });
-  }
-  buildTable();
-
-  // סיווג
-  function classify(ra,unit){
-    const ra_um = unit==="uin" ? ra/UIN_PER_UM : ra;
-    let grade = null;
-    for(const g of N){ if(ra_um <= g.um + 1e-12){ grade = g; break; } }
-    if(!grade) return {status:"out", ra_um};
-    const i = N.findIndex(x=>x.n===grade.n);
-    const lower = i>0 ? Math.sqrt(N[i-1].um*grade.um) : 0;
-    const upper = i<N.length-1 ? Math.sqrt(grade.um*N[i+1].um) : Infinity;
-    return {status:"ok", grade, ra_um, lower, upper};
-  }
-
-  // הצגה
-  function explain(res){
-    const out = document.getElementById("out");
-    document.querySelectorAll("#tbl tbody tr").forEach(tr=>tr.classList.remove("hit"));
-
-    const unitSel = document.getElementById("unit").value;
-    const inputVal = Number(document.getElementById("ra").value);
-    const ra_um = unitSel==="uin" ? inputVal/UIN_PER_UM : inputVal;
-    const ra_uin = ra_um*UIN_PER_UM;
-
-    if(res.status==="out"){
-      out.innerHTML = `<h2>מחוץ לטווח</h2>
-        <div class="muted">Ra גבוה מ-50 µm (N12). בדוק את תהליך הגימור.</div>
-        <div class="chip">Ra: ${fmt(ra_um,3)} µm</div>
-        <div class="chip">≈ ${fmt(ra_uin,1)} µin</div>`;
-      return;
-    }
-
-    const row = document.querySelector(`#tbl tr[data-n="${res.grade.n}"]`);
-    if(row) row.classList.add("hit");
-
-    out.innerHTML = `
-      <h2>דרגת N: <span class="tagline">N${res.grade.n}</span></h2>
-      <div class="muted">נבחרה הדרגה הקטנה ביותר שעומדת בערך הנמדד.</div>
-      <div style="margin-top:8px">
-        <span class="chip">Ra = <b>${fmt(ra_um,3)}</b> µm</span>
-        <span class="chip">≈ <b>${fmt(ra_uin,1)}</b> µin</span>
-        <span class="chip">נומינל N${res.grade.n}: ${fmt(res.grade.um,3)} µm</span>
-      </div>
-      <div class="muted" style="margin-top:6px">
-        טווח אינפורמטיבי (חציון לוגריתמי): ${res.lower?fmt(res.lower,3):"—"} עד ${Number.isFinite(res.upper)?fmt(res.upper,3):"∞"} µm
-      </div>`;
-  }
-
-  function calc(){
-    const ra = Number(document.getElementById("ra").value);
-    const unit = document.getElementById("unit").value;
-    if(!isFinite(ra) || ra < 0){ alert("אנא הזן ערך Ra חוקי."); return; }
-    explain(classify(ra, unit));
-  }
-
-  // קיצורי מקלדת ומגע
-  document.getElementById("calc").addEventListener("click", calc);
-  document.getElementById("ra").addEventListener("keydown", e=>{
-    if(e.key==="Enter") calc();
-  });
-
-  // התאמה למקלדת באייפון 12 (VisualViewport)
-  const card = document.querySelector('.card');
-  const input = document.getElementById('ra');
-  function ensureVisible(el){
-    const r = el.getBoundingClientRect();
-    const vh = (window.visualViewport?.height || window.innerHeight);
-    if(r.bottom > vh - 16){
-      window.scrollBy({top: r.bottom - (vh - 16), behavior:'smooth'});
-    }
-  }
-  ['focus','input'].forEach(ev=>input.addEventListener(ev,()=>ensureVisible(input)));
-
-  if(window.visualViewport){
-    const onVV = ()=>{
-      document.body.style.height = window.visualViewport.height + 'px';
-      // Padding לתחתית כדי למנוע כיסוי ע"י המקלדת
-      card.style.marginBottom = Math.max(0,(window.innerHeight - window.visualViewport.height)+20) + 'px';
-    };
-    window.visualViewport.addEventListener('resize', onVV);
-    window.visualViewport.addEventListener('scroll', onVV);
-  }
-})();
+const µmToµin = v => v * 39.3701;
+const fmt = v => Number(v).toFixed(3);
+const N = [
+  {n:1, ra:0.025}, {n:2, ra:0.05}, {n:3, ra:0.1}, {n:4, ra:0.2},
+  {n:5, ra:0.4}, {n:6, ra:0.8}, {n:7, ra:1.6}, {n:8, ra:3.2},
+  {n:9, ra:6.3}, {n:10, ra:12.5}, {n:11, ra:25}, {n:12, ra:50}
+];
+const bands = N.map((g,i)=>{
+  const lo = i===0 ? 0 : Math.sqrt(g.ra * N[i-1].ra);
+  const hi = i===N.length-1 ? Infinity : Math.sqrt(g.ra * N[i+1].ra);
+  return {...g, lo, hi};
+});
+const tbody = document.getElementById('tbody');
+bands.forEach(b=>{
+  const hiShow = b.hi===Infinity? b.ra*Math.sqrt(2):b.hi;
+  tbody.innerHTML += `
+    <tr id="rowN${b.n}">
+      <td><b>N${b.n}</b></td>
+      <td>${fmt(b.ra)}</td>
+      <td>${fmt(b.lo)} – ${fmt(hiShow)}</td>
+      <td>${fmt(µmToµin(b.ra))}</td>
+    </tr>`;
+});
+function calc(){
+  const val = parseFloat(document.getElementById('ra').value.replace(',', '.'));
+  const unit = document.getElementById('unit').value;
+  const res = document.getElementById('res');
+  if(isNaN(val) || val<=0){ res.textContent="יש להזין ערך תקין"; return; }
+  const ra_um = unit==='uin'? val/39.3701 : val;
+  const g = bands.find(b=>ra_um>=b.lo && ra_um<b.hi) || bands[bands.length-1];
+  const hiShow = g.hi===Infinity? g.ra*Math.sqrt(2):g.hi;
+  res.innerHTML = `
+    דרגת <span class="pill ok">N${g.n}</span><br>
+    Ra = ${fmt(ra_um)} µm (${fmt(µmToµin(ra_um))} µin)<br>
+    טווח: ${fmt(g.lo)} – ${fmt(hiShow)} µm`;
+  document.querySelectorAll('tr').forEach(tr=>tr.classList.remove('active'));
+  document.getElementById(`rowN${g.n}`).classList.add('active');
+  document.getElementById(`rowN${g.n}`).scrollIntoView({behavior:"smooth", block:"center"});
+}
 </script>
 </body>
 </html>
