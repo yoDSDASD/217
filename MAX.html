@@ -1,85 +1,184 @@
-<script>
-const fmt = v => Number(v).toFixed(3);
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מכשירי יצור</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Heebo", sans-serif;
+    background: #f6f6f6;
+    color: #111;
+  }
 
-// מקריאים מספר בבטחה: תומך בפסיקים/רווחים
-function readNum(id){
-  const el = document.getElementById(id);
-  if(!el) return NaN;
-  const raw = String(el.value).trim().replace(/,/g,'.');
-  const n = parseFloat(raw);
-  return isNaN(n) ? NaN : n;
+  .container {
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 2.5vh 4vw;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+  }
+
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+  }
+
+  input {
+    padding: 0.4em 0.6em;
+    font-size: 1.05rem;
+    border: 1px solid #bbb;
+    border-radius: 0.3em;
+    text-align: center;
+    direction: ltr;
+    background: #fff;
+    transition: 0.15s;
+  }
+
+  input:focus {
+    border-color: #000;
+    outline: none;
+  }
+
+  .result {
+    background: #fff;
+    border: 1px solid #999;
+    border-radius: 0.4em;
+    padding: 0.6em;
+    margin-top: 0.8rem;
+    font-family: monospace;
+    font-size: 1.1rem;
+    display: none;
+    direction: ltr;
+    text-align: left;
+  }
+
+  .highlight { color: #c00000; }
+
+  button {
+    width: 100%;
+    padding: 0.55em;
+    margin-top: 0.45rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.4em;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+
+  .calc-btn {
+    background: #000;
+    color: #fff;
+  }
+
+  .calc-btn:hover { background: #222; }
+
+  .reset-btn {
+    background: #d7d7d7;
+    color: #000;
+  }
+
+  .reset-btn:hover { background: #aaa; }
+
+  @media (max-width: 480px) {
+    .container { padding: 2.5vh 5vw; }
+    .title { font-size: 1.25rem; }
+    input { font-size: 1rem; }
+    .result { font-size: 1.05rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="title">מכשירי יצור</div>
+
+  <div class="input-group">
+    <label for="nominal">NOM</label>
+    <input type="number" step="any" id="nominal" inputmode="decimal">
+  </div>
+
+  <div class="input-group">
+    <label for="upperTol">+TOL</label>
+    <input type="number" step="any" id="upperTol" inputmode="decimal">
+  </div>
+
+  <div class="input-group">
+    <label for="lowerTol">−TOL</label>
+    <input type="number" step="any" id="lowerTol" inputmode="decimal">
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <button class="calc-btn" onclick="calculate()">חשב</button>
+  <button class="reset-btn" onclick="resetCalc()">איפוס</button>
+</div>
+
+<script>
+function format(v) {
+  return parseFloat(v).toFixed(3);
 }
 
-function blurInputs(){ document.querySelectorAll('input').forEach(el=>el.blur()); }
+function blurAllInputs() {
+  document.querySelectorAll("input").forEach(inp => inp.blur());
+}
 
-function calc(){
-  blurInputs();
+function calculate() {
+  blurAllInputs();
+  const nominal = parseFloat(document.getElementById("nominal").value);
+  const upperInput = document.getElementById("upperTol").value;
+  const lowerInput = document.getElementById("lowerTol").value;
+  const resultEl = document.getElementById("result");
 
-  const nom = readNum('nominal');
-  const tp  = readNum('tolp');   // +TOL
-  const tm  = readNum('tolm');   // -TOL
+  let upper = parseFloat(upperInput);
+  let lower = parseFloat(lowerInput);
 
-  const seriesBox = document.getElementById('series');
-  const resultBox = document.getElementById('resultBox');
-
-  // ניקוי קודם
-  seriesBox.innerHTML = '';
-  seriesBox.style.display = 'none';
-
-  if (isNaN(nom)) {
-    resultBox.style.display='block';
-    resultBox.innerHTML='יש להזין ערך נומינלי תקין';
+  if (isNaN(nominal)) {
+    resultEl.style.display = "block";
+    resultEl.innerHTML = "יש להזין ערך נומינלי תקין";
     return;
   }
 
-  const up = isNaN(tp) ? 0 : tp;
-  const lo = isNaN(tm) ? 0 : tm;
+  if (isNaN(upper)) upper = 0;
+  if (isNaN(lower)) lower = 0;
 
-  // חישוב גבולות
-  const max = nom + up;
-  const min = nom - lo;
+  const max = nominal + upper;
+  const min = nominal - lower;
+  const range = max - min;
 
-  // הצגה ברורה בשורה אחת
-  resultBox.innerHTML =
-    `<strong>תוצאה:</strong><br>` +
-    `<span style="font-size:1.1rem"><b>${fmt(max)}</b> ⇐ קדח ⇒ <b>${fmt(min)}</b></span>`;
-  resultBox.style.display = 'block';
+  let output = "";
+  if (upper > 0) output += `<div><strong class="highlight">MAX:</strong> ${format(max)}</div>`;
+  if (lower > 0) output += `<div><strong class="highlight">MIN:</strong> ${format(min)}</div>`;
+  if (upper > 0 && lower > 0) output += `<hr><div><strong>RANGE:</strong> ${format(range)}</div>`;
+  if (!output) output = `<div>אין נתונים להצגה</div>`;
 
-  // יצירת סדרת פינים בתקינה 0.01 מ״מ
-  const step = 0.01;
-
-  // עיגול לדרגת פינים (למעלה למינימום, למטה למקסימום)
-  const start = Math.ceil(min * 100) / 100;
-  const end   = Math.floor(max * 100) / 100;
-
-  let html = '';
-  if (start > end) {
-    html = 'אין פינים בתחום זה';
-  } else {
-    const goVal   = start; // לקדח: Go = הקטן
-    const noGoVal = end;   // No-Go = הגדול
-
-    // לולאה יציבה מתמטית למניעת שגיאות ציפה
-    for (let i = Math.round(start*100); i <= Math.round(end*100); i += 1) {
-      const v = i / 100;
-      const val = fmt(v);
-      if (i === Math.round(goVal*100))   html += `<div class="pin go">${val} <b>Go</b></div>`;
-      else if (i === Math.round(noGoVal*100)) html += `<div class="pin nogo">${val} <b>No-Go</b></div>`;
-      else html += `<div class="pin">${val}</div>`;
-    }
-  }
-
-  seriesBox.innerHTML = html;
-  seriesBox.style.display = 'block';
+  resultEl.innerHTML = output;
+  resultEl.style.display = "block";
 }
 
-function resetAll(){
-  blurInputs();
-  ['nominal','tolp','tolm'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('resultBox').style.display='none';
-  document.getElementById('resultBox').innerHTML='';
-  const box=document.getElementById('series');
-  box.innerHTML='';
-  box.style.display='none';
+function resetCalc() {
+  blurAllInputs();
+  ["nominal","upperTol","lowerTol"].forEach(id => document.getElementById(id).value = "");
+  const resultEl = document.getElementById("result");
+  resultEl.innerHTML = "";
+  resultEl.style.display = "none";
 }
 </script>
+
+</body>
+</html>
