@@ -12,63 +12,90 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
+      padding: 20px 0;
       background-color: #000;
       color: #fff;
-      height: 100%;
-      overflow-x: hidden;
-    }
-
-    body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding-top: 25px;
+      min-height: 100vh;
     }
 
     .card {
-      background-color: #111;
-      padding: 26px;
       width: 92%;
-      max-width: 430px;
-      border-radius: 20px;
-      box-shadow: 0 0 14px rgba(0,0,0,0.7);
+      max-width: 420px;
+      background-color: #111;
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 0 18px rgba(0,0,0,0.6);
     }
 
     .title {
       text-align: center;
-      font-weight: 700;
-      font-size: 1.35rem;
+      font-size: 1.45rem;
+      font-weight: 800;
       margin-bottom: 4px;
     }
 
     .subtitle {
       text-align: center;
-      font-size: 0.82rem;
-      color: #cfcfcf;
-      margin-bottom: 22px;
+      font-size: 0.85rem;
+      color: #bfbfbf;
+      margin-bottom: 24px;
     }
 
+    /* תוצאה למעלה */
+    .result-box {
+      background-color: #161616;
+      border: 1px solid #222;
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 26px;
+      text-align: center;
+    }
+
+    .result-label {
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      color: #bbbbbb;
+    }
+
+    .result-small {
+      font-family: "Courier New", monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .result-final {
+      font-family: "Courier New", monospace;
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: #00e676;
+    }
+
+    /* קלט */
     .field {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
 
     .field label {
       display: block;
-      font-size: 0.9rem;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+      color: #e0e0e0;
+      font-weight: 600;
     }
 
     .field input {
       width: 100%;
-      padding: 13px;
+      padding: 15px;
+      font-size: 1.05rem;
       border-radius: 12px;
       border: 1px solid #333;
       background-color: #1a1a1a;
       color: #fff;
-      font-size: 1rem;
     }
 
     .field input:focus {
@@ -77,6 +104,7 @@
       outline: none;
     }
 
+    /* כפתור */
     .btn {
       width: 100%;
       padding: 15px 0;
@@ -84,41 +112,14 @@
       border-radius: 14px;
       background: linear-gradient(135deg, #00c3ff, #0077ff);
       color: #fff;
-      font-weight: 700;
-      font-size: 1.05rem;
+      font-weight: 800;
+      font-size: 1.15rem;
       cursor: pointer;
-      margin-top: 4px;
+      margin-top: 10px;
     }
 
     .btn:active {
       transform: scale(0.97);
-    }
-
-    .results {
-      margin-top: 22px;
-      line-height: 1.7;
-    }
-
-    .result-label {
-      font-size: 0.9rem;
-      color: #bbb;
-      margin-bottom: 4px;
-    }
-
-    .result-value {
-      display: block;
-      font-weight: 700;
-      font-family: "Courier New", monospace;
-      font-size: 1.15rem;
-      margin-bottom: 12px;
-    }
-
-    /* התוצאה הסופית – מוגדלת כמו שביקשת */
-    .final {
-      font-size: 1.75rem;
-      color: #00e676;
-      margin-top: 6px;
-      font-weight: 900;
     }
 
   </style>
@@ -130,6 +131,16 @@
     <div class="title">מחשבון מידה לפני צבע</div>
     <div class="subtitle">עובי צבע × 2 ומידת עיבוד לפני צבע</div>
 
+    <!-- תוצאות בראש -->
+    <div class="result-box">
+      <div class="result-label">עובי צבע × 2 (מ״מ)</div>
+      <div id="res1" class="result-small">—</div>
+
+      <div class="result-label">מידה לעיבוד לפני צבע (מ״מ)</div>
+      <div id="res2" class="result-final">—</div>
+    </div>
+
+    <!-- קלט -->
     <div class="field">
       <label>עובי צבע נדרש (מ״מ)</label>
       <input id="paint" type="number" step="0.001" placeholder="לדוגמה: 0.008">
@@ -142,34 +153,26 @@
 
     <button class="btn" onclick="calc()">חשב</button>
 
-    <div class="results">
-      <div class="result-label">עובי צבע × 2 (מ״מ)</div>
-      <span class="result-value" id="res1">—</span>
-
-      <div class="result-label">מידה לעיבוד לפני צבע (מ״מ)</div>
-      <span class="result-value final" id="res2">—</span>
-    </div>
-
   </div>
 
-  <script>
-    function calc() {
-      const p = parseFloat(document.getElementById("paint").value.replace(",", "."));
-      const d = parseFloat(document.getElementById("drawing").value.replace(",", "."));
+<script>
+function calc() {
+  const p = parseFloat(document.getElementById("paint").value.replace(",", "."));
+  const d = parseFloat(document.getElementById("drawing").value.replace(",", "."));
 
-      if (isNaN(p) || isNaN(d)) {
-        document.getElementById("res1").textContent = "—";
-        document.getElementById("res2").textContent = "—";
-        return;
-      }
+  if (isNaN(p) || isNaN(d)) {
+    document.getElementById("res1").textContent = "—";
+    document.getElementById("res2").textContent = "—";
+    return;
+  }
 
-      const paint2 = (p * 2).toFixed(3);
-      const beforePaint = (d - (p * 2)).toFixed(3);
+  const paint2 = (p * 2).toFixed(3);
+  const beforePaint = (d - (p * 2)).toFixed(3);
 
-      document.getElementById("res1").textContent = paint2;
-      document.getElementById("res2").textContent = beforePaint;
-    }
-  </script>
+  document.getElementById("res1").textContent = paint2;
+  document.getElementById("res2").textContent = beforePaint;
+}
+</script>
 
 </body>
 </html>
