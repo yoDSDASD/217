@@ -2,8 +2,13 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>מחשבון מידה לפני צבע</title>
+
+  <!-- חובה לאייפון: תגובה מיידית, בלי זום כפול, בלי איטיות -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,
+        maximum-scale=1.0, user-scalable=no">
+
+  <title>מחשבון צבע PRO</title>
 
   <style>
     * {
@@ -12,22 +17,34 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    body {
+    html, body {
       margin: 0;
-      padding: 20px 0;
+      padding: 0;
       background-color: #000;
       color: #fff;
+      min-height: 100vh;
+      touch-action: manipulation;
+    }
+
+    body {
       display: flex;
       justify-content: center;
-      min-height: 100vh;
+      padding-top: 22px;
+    }
+
+    /* מונע לחיצה איטית באייפון */
+    button, input {
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
     .card {
       width: 92%;
       max-width: 420px;
       background-color: #111;
-      border-radius: 22px;
       padding: 26px;
+      border-radius: 22px;
       box-shadow: 0 0 18px rgba(0,0,0,0.6);
     }
 
@@ -45,7 +62,7 @@
       margin-bottom: 24px;
     }
 
-    /* תוצאה למעלה */
+    /* תוצאות בראש */
     .result-box {
       background-color: #161616;
       border: 1px solid #222;
@@ -57,15 +74,15 @@
 
     .result-label {
       font-size: 0.9rem;
-      margin-bottom: 6px;
       color: #bbbbbb;
+      margin-bottom: 4px;
     }
 
     .result-small {
       font-family: "Courier New", monospace;
       font-size: 1.15rem;
       font-weight: 700;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .result-final {
@@ -73,28 +90,28 @@
       font-size: 2.1rem;
       font-weight: 900;
       color: #00e676;
+      margin-top: 8px;
     }
 
-    /* קלט */
+    /* שדות קלט */
     .field {
       margin-bottom: 18px;
     }
 
     .field label {
-      display: block;
-      margin-bottom: 6px;
       font-size: 0.95rem;
-      color: #e0e0e0;
+      margin-bottom: 6px;
+      display: block;
       font-weight: 600;
     }
 
     .field input {
       width: 100%;
       padding: 15px;
-      font-size: 1.05rem;
-      border-radius: 12px;
-      border: 1px solid #333;
+      font-size: 1.1rem;
       background-color: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
       color: #fff;
     }
 
@@ -113,9 +130,9 @@
       background: linear-gradient(135deg, #00c3ff, #0077ff);
       color: #fff;
       font-weight: 800;
-      font-size: 1.15rem;
+      font-size: 1.18rem;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .btn:active {
@@ -128,15 +145,15 @@
 
   <div class="card">
 
-    <div class="title">מחשבון מידה לפני צבע</div>
-    <div class="subtitle">עובי צבע × 2 ומידת עיבוד לפני צבע</div>
+    <div class="title">מחשבון מידה לפני/אחרי צבע</div>
+    <div class="subtitle">עובי צבע × 2 + מידה סופית אחרי צביעה</div>
 
-    <!-- תוצאות בראש -->
+    <!-- תוצאות למעלה -->
     <div class="result-box">
       <div class="result-label">עובי צבע × 2 (מ״מ)</div>
       <div id="res1" class="result-small">—</div>
 
-      <div class="result-label">מידה אחרי צבע משוער במקסימום (מ״מ)</div>
+      <div class="result-label">מידה סופית אחרי צביעה</div>
       <div id="res2" class="result-final">—</div>
     </div>
 
@@ -167,10 +184,10 @@ function calc() {
   }
 
   const paint2 = (p * 2).toFixed(3);
-  const beforePaint = (d - (p * 2)).toFixed(3);
+  const finalDim = (d - (p * 2)).toFixed(3);
 
   document.getElementById("res1").textContent = paint2;
-  document.getElementById("res2").textContent = beforePaint;
+  document.getElementById("res2").textContent = finalDim;
 }
 </script>
 
