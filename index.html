@@ -2,12 +2,14 @@
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>מחשבון מידה לפני צבע</title>
+
   <style>
     * {
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html, body {
@@ -15,26 +17,31 @@
       padding: 0;
       background-color: #000;
       color: #fff;
+      height: 100%;
+      overflow-x: hidden;
     }
 
-    .wrapper {
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 20px 14px;
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 25px;
     }
 
     .card {
       background-color: #111;
-      padding: 22px;
-      border-radius: 18px;
+      padding: 26px;
+      width: 92%;
+      max-width: 430px;
+      border-radius: 20px;
       box-shadow: 0 0 14px rgba(0,0,0,0.7);
     }
 
     .title {
       text-align: center;
       font-weight: 700;
-      font-size: 1.25rem;
-      margin-bottom: 6px;
+      font-size: 1.35rem;
+      margin-bottom: 4px;
     }
 
     .subtitle {
@@ -45,7 +52,7 @@
     }
 
     .field {
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .field label {
@@ -56,8 +63,8 @@
 
     .field input {
       width: 100%;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 13px;
+      border-radius: 12px;
       border: 1px solid #333;
       background-color: #1a1a1a;
       color: #fff;
@@ -72,9 +79,9 @@
 
     .btn {
       width: 100%;
-      padding: 14px 0;
+      padding: 15px 0;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       background: linear-gradient(135deg, #00c3ff, #0077ff);
       color: #fff;
       font-weight: 700;
@@ -88,48 +95,61 @@
     }
 
     .results {
-      margin-top: 18px;
-      font-size: 0.95rem;
-      line-height: 1.6;
+      margin-top: 22px;
+      line-height: 1.7;
     }
 
-    .value {
+    .result-label {
+      font-size: 0.9rem;
+      color: #bbb;
+      margin-bottom: 4px;
+    }
+
+    .result-value {
+      display: block;
       font-weight: 700;
       font-family: "Courier New", monospace;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
+      margin-bottom: 12px;
     }
 
-    .green {
+    /* התוצאה הסופית – מוגדלת כמו שביקשת */
+    .final {
+      font-size: 1.75rem;
       color: #00e676;
+      margin-top: 6px;
+      font-weight: 900;
     }
+
   </style>
 </head>
 <body>
 
-  <div class="wrapper">
-    <div class="card">
+  <div class="card">
 
-      <div class="title">מחשבון מידה לפני צבע</div>
-      <div class="subtitle">מחשב עובי צבע כפול 2 ומידת עיבוד לפני צבע</div>
+    <div class="title">מחשבון מידה לפני צבע</div>
+    <div class="subtitle">עובי צבע × 2 ומידת עיבוד לפני צבע</div>
 
-      <div class="field">
-        <label>עובי צבע נדרש (מ״מ)</label>
-        <input id="paint" type="number" step="0.001" placeholder="לדוגמה: 0.008">
-      </div>
-
-      <div class="field">
-        <label>מידה בשרטוט (מ״מ)</label>
-        <input id="drawing" type="number" step="0.001" placeholder="לדוגמה: 23.625">
-      </div>
-
-      <button class="btn" onclick="calc()">חשב</button>
-
-      <div class="results">
-        <div><span class="value" id="res1">—</span> :עובי צבע כפול 2 (מ״מ)</div>
-        <div><span class="value green" id="res2">—</span> :מידה לעיבוד לפני צבע (מ״מ)</div>
-      </div>
-
+    <div class="field">
+      <label>עובי צבע נדרש (מ״מ)</label>
+      <input id="paint" type="number" step="0.001" placeholder="לדוגמה: 0.008">
     </div>
+
+    <div class="field">
+      <label>מידה בשרטוט (מ״מ)</label>
+      <input id="drawing" type="number" step="0.001" placeholder="לדוגמה: 23.625">
+    </div>
+
+    <button class="btn" onclick="calc()">חשב</button>
+
+    <div class="results">
+      <div class="result-label">עובי צבע × 2 (מ״מ)</div>
+      <span class="result-value" id="res1">—</span>
+
+      <div class="result-label">מידה לעיבוד לפני צבע (מ״מ)</div>
+      <span class="result-value final" id="res2">—</span>
+    </div>
+
   </div>
 
   <script>
